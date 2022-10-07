@@ -25,7 +25,6 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("Player OnEnable");
         _input.actions["Move"].performed += OnMove;
         _input.actions["Move"].canceled += OnMove;
         _input.actions["Look"].performed += OnLook;
@@ -34,7 +33,6 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnDisable()
     {
-        Debug.Log("Player OnDisable");
         _input.actions["Move"].performed -= OnMove;
         _input.actions["Move"].canceled -= OnMove;
         _input.actions["Look"].performed -= OnLook;
@@ -43,15 +41,12 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnMove(InputAction.CallbackContext obj)
     {
-        Debug.Log("OnMove");
         _move_direction = obj.ReadValue<Vector2>();
     }
 
     private void OnLook(InputAction.CallbackContext obj)
     {
-        Debug.Log("OnLook");
         _look_direction = obj.ReadValue<Vector2>();
-        Debug.Log("OnLook: " + _look_direction);
     }
 
     public Vector2 GetMoveDirection()
