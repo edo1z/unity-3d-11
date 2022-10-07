@@ -2324,7 +2324,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 072f56bfea30dac4e9789a94261ef4bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player_height: 1.8
+  _player_crouching_height: 0.9
   _move_speed: 10
+  _run_speed_multiplier: 2
+  _crouch_speed_multiplier: 0.5
   _look_sensitive_x: 9
   _look_sensitive_y: 3
 --- !u!114 &525663792

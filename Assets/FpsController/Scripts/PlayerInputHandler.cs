@@ -82,7 +82,21 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
+    // ボタンを押すとしゃがむが切り替わる
     private void OnCrouch(InputAction.CallbackContext obj)
+    {
+        switch (obj.phase)
+        {
+            case InputActionPhase.Started:
+                _is_crouching = !_is_crouching;
+                break;
+            case InputActionPhase.Canceled:
+                break;
+        }
+    }
+
+    // ボタンを押している間のみしゃがむ
+    private void OnCrouch2(InputAction.CallbackContext obj)
     {
         switch (obj.phase)
         {
