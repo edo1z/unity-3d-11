@@ -3,6 +3,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private float _move_speed = 10f;
+    [SerializeField] private float _run_speed_multiplier = 2f;
     [SerializeField] private float _look_sensitive_x = 9f;
     [SerializeField] private float _look_sensitive_y = 3f;
 
@@ -34,12 +35,11 @@ public class Player : MonoBehaviour
         Vector3 posi = transform.position;
         if (move_direction != Vector2.zero)
         {
-            posi += transform.right * move_direction.x * _move_speed * Time.deltaTime;
-            posi += transform.forward * move_direction.y * _move_speed * Time.deltaTime;
+            float speed = _move_speed * (_input.GetIsRunning() ? _run_speed_multiplier : 1f);
+            posi += transform.right * move_direction.x * speed * Time.deltaTime;
+            posi += transform.forward * move_direction.y * speed * Time.deltaTime;
         }
-        Vector3 delta = posi - transform.position;
-        delta.y = 0;
-        _chara.Move(delta);
+        _chara.Move(posi - transform.position);
     }
 
     private void Update()

@@ -6,6 +6,10 @@ public class PlayerInputHandler : MonoBehaviour
     private PlayerInput _input;
     private Vector2 _move_direction;
     private Vector2 _look_direction;
+    private bool _is_running = false;
+    private bool _is_crouching = false;
+    private bool _is_fire = false;
+    private bool _is_jumping = false;
 
     private void Awake()
     {
@@ -29,6 +33,14 @@ public class PlayerInputHandler : MonoBehaviour
         _input.actions["Move"].canceled += OnMove;
         _input.actions["Look"].performed += OnLook;
         _input.actions["Look"].canceled += OnLook;
+        _input.actions["Run"].started += OnRun;
+        _input.actions["Run"].canceled += OnRun;
+        _input.actions["Crouch"].started += OnCrouch;
+        _input.actions["Crouch"].canceled += OnCrouch;
+        _input.actions["Fire"].started += OnFire;
+        _input.actions["Fire"].canceled += OnFire;
+        _input.actions["Jump"].started += OnJump;
+        _input.actions["Jump"].canceled += OnJump;
     }
 
     private void OnDisable()
@@ -37,6 +49,14 @@ public class PlayerInputHandler : MonoBehaviour
         _input.actions["Move"].canceled -= OnMove;
         _input.actions["Look"].performed -= OnLook;
         _input.actions["Look"].canceled -= OnLook;
+        _input.actions["Run"].started += OnRun;
+        _input.actions["Run"].canceled += OnRun;
+        _input.actions["Crouch"].started += OnCrouch;
+        _input.actions["Crouch"].canceled += OnCrouch;
+        _input.actions["Fire"].started += OnFire;
+        _input.actions["Fire"].canceled += OnFire;
+        _input.actions["Jump"].started += OnJump;
+        _input.actions["Jump"].canceled += OnJump;
     }
 
     private void OnMove(InputAction.CallbackContext obj)
@@ -47,6 +67,58 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnLook(InputAction.CallbackContext obj)
     {
         _look_direction = obj.ReadValue<Vector2>();
+    }
+
+    private void OnRun(InputAction.CallbackContext obj)
+    {
+        switch (obj.phase)
+        {
+            case InputActionPhase.Started:
+                _is_running = true;
+                break;
+            case InputActionPhase.Canceled:
+                _is_running = false;
+                break;
+        }
+    }
+
+    private void OnCrouch(InputAction.CallbackContext obj)
+    {
+        switch (obj.phase)
+        {
+            case InputActionPhase.Started:
+                _is_crouching = true;
+                break;
+            case InputActionPhase.Canceled:
+                _is_crouching = false;
+                break;
+        }
+    }
+
+    private void OnFire(InputAction.CallbackContext obj)
+    {
+        switch (obj.phase)
+        {
+            case InputActionPhase.Started:
+                _is_fire = true;
+                break;
+            case InputActionPhase.Canceled:
+                _is_fire = false;
+                break;
+        }
+    }
+
+    private void OnJump(InputAction.CallbackContext obj)
+    {
+        switch (obj.phase)
+        {
+            case InputActionPhase.Started:
+                _is_jumping = true;
+                break;
+            case InputActionPhase.Canceled:
+                _is_jumping = false;
+                break;
+        }
     }
 
     public Vector2 GetMoveDirection()
@@ -71,6 +143,26 @@ public class PlayerInputHandler : MonoBehaviour
         {
             return Vector2.zero;
         }
+    }
+
+    public bool GetIsRunning()
+    {
+        return _is_running;
+    }
+
+    public bool GetIsCrouching()
+    {
+        return _is_crouching;
+    }
+
+    public bool GetIsJumping()
+    {
+        return _is_jumping;
+    }
+
+    public bool GetIsFire()
+    {
+        return _is_fire;
     }
 
 }
