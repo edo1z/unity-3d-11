@@ -65,7 +65,8 @@ public class Player : MonoBehaviour
             {
                 _player_now_height = _player_height;
             }
-            _character_velocity = move_direction * speed;
+            float sharpness = 15f;
+            _character_velocity = Vector3.Lerp(_character_velocity, move_direction * speed, sharpness * Time.deltaTime);
 
             if (_input.GetIsJumping())
             {
@@ -94,7 +95,8 @@ public class Player : MonoBehaviour
 
     private void UpdateHeight()
     {
-        _chara.height = _player_now_height;
+        float sharpness = 15f;
+        _chara.height = Mathf.Lerp(_chara.height, _player_now_height, sharpness * Time.deltaTime);
         _chara.center = Vector3.up * _chara.height * 0.5f;
         _cam.transform.localPosition = Vector3.up * _chara.height * _camera_height_ratio;
     }
