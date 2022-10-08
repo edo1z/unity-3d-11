@@ -5,16 +5,23 @@ public class Player : MonoBehaviour
     [SerializeField] private float _player_height = 1.8f;
     [SerializeField] private float _player_crouching_height = 0.9f;
     [SerializeField] private float _camera_height_ratio = 0.9f;
-    [SerializeField] private float _move_speed = 10f;
+    [SerializeField] private float _move_speed = 6f;
     [SerializeField] private float _run_speed_multiplier = 2f;
-    [SerializeField] private float _crouch_speed_multiplier = 0.5f;
-    [SerializeField] private float _look_sensitive_x = 9f;
-    [SerializeField] private float _look_sensitive_y = 3f;
+    [SerializeField] private float _crouch_speed_multiplier = 0.3f;
+    [SerializeField] private float _jump_force = 10f;
+    [SerializeField] private float _jumping_add_speed = 10f;
+    [SerializeField] private float _gravity_force = 20f;
+    [SerializeField] private float _look_sensitive_x = 12f;
+    [SerializeField] private float _look_sensitive_y = 8f;
+    private float _start_check_grounded_time = 0.2f;
+    private float _grounded_check_distance = 0.05f;
 
     private PlayerInputHandler _input;
     private CharacterController _chara;
     private GameObject _cam;
     private float _player_now_height;
+    private bool _is_grounded = false;
+    private float _last_jump_time;
 
     private Vector3 _character_velocity = new Vector3(0, 0, 0);
 
@@ -46,17 +53,42 @@ public class Player : MonoBehaviour
     {
         Vector2 local_move_direction = _input.GetMoveDirection();
         Vector3 move_direction = transform.TransformVector(new Vector3(local_move_direction.x, 0, local_move_direction.y));
-        float speed = _move_speed * (_input.GetIsRunning() ? _run_speed_multiplier : 1f);
-        if (_input.GetIsCrouching())
+        if (_is_grounded)
         {
-            speed *= _crouch_speed_multiplier;
-            _player_now_height = _player_crouching_height;
+            float speed = _move_speed * (_input.GetIsRunning() ? _run_speed_multiplier : 1f);
+            if (_input.GetIsCrouching())
+            {
+                speed *= _crouch_speed_multiplier;
+                _player_now_height = _player_crouching_height;
+            }
+            else
+            {
+                _player_now_height = _player_height;
+            }
+            _character_velocity = move_direction * speed;
+
+            if (_input.GetIsJumping())
+            {
+                if (_input.GetIsCrouching())
+                {
+                    _input.SetCrouching(false);
+                }
+                else
+                {
+                    _character_velocity.y = _jump_force;
+                    _is_grounded = false;
+                    _last_jump_time = Time.time;
+                }
+            }
         }
         else
         {
-            _player_now_height = _player_height;
+            _character_velocity += move_direction * _jumping_add_speed * Time.deltaTime;
+            Vector3 horizontal_velocity = Vector3.ProjectOnPlane(_character_velocity, Vector3.up);
+            horizontal_velocity = Vector3.ClampMagnitude(horizontal_velocity, _move_speed);
+            _character_velocity = horizontal_velocity + Vector3.up * _character_velocity.y;
+            _character_velocity += Vector3.down * _gravity_force * Time.deltaTime;
         }
-        _character_velocity = move_direction * speed;
         _chara.Move(_character_velocity * Time.deltaTime);
     }
 
@@ -69,11 +101,23 @@ public class Player : MonoBehaviour
 
     private void CheckGrounded()
     {
-
+        _is_grounded = false;
+        if (Time.time >= _last_jump_time + _start_check_grounded_time)
+        {
+            Vector3 bottom_posi = transform.position + (transform.up * _chara.radius);
+            Vector3 top_posi = transform.position + transform.up * (_chara.height - _chara.radius);
+            float distance = _grounded_check_distance + _chara.skinWidth;
+            Debug.Log("bottom: " + bottom_posi + " top: " + top_posi + " distance: " + distance);
+            if (Physics.CapsuleCast(bottom_posi, top_posi, _chara.radius, Vector3.down, out RaycastHit hit, distance, -1, QueryTriggerInteraction.Ignore))
+            {
+                _is_grounded = true;
+            }
+        }
     }
 
     private void Update()
     {
+        CheckGrounded();
         Aim();
         Move();
         UpdateHeight();

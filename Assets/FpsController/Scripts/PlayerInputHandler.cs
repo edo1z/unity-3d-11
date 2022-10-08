@@ -169,6 +169,11 @@ public class PlayerInputHandler : MonoBehaviour
         return _is_crouching;
     }
 
+    public void SetCrouching(bool is_crouching)
+    {
+        _is_crouching = is_crouching;
+    }
+
     public bool GetIsJumping()
     {
         return _is_jumping;
