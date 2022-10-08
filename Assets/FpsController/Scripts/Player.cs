@@ -53,9 +53,9 @@ public class Player : MonoBehaviour
     {
         Vector2 local_move_direction = _input.GetMoveDirection();
         Vector3 move_direction = transform.TransformVector(new Vector3(local_move_direction.x, 0, local_move_direction.y));
+        float speed = _move_speed * (_input.GetIsRunning() ? _run_speed_multiplier : 1f);
         if (_is_grounded)
         {
-            float speed = _move_speed * (_input.GetIsRunning() ? _run_speed_multiplier : 1f);
             if (_input.GetIsCrouching())
             {
                 speed *= _crouch_speed_multiplier;
@@ -86,7 +86,7 @@ public class Player : MonoBehaviour
         {
             _character_velocity += move_direction * _jumping_add_speed * Time.deltaTime;
             Vector3 horizontal_velocity = Vector3.ProjectOnPlane(_character_velocity, Vector3.up);
-            horizontal_velocity = Vector3.ClampMagnitude(horizontal_velocity, _move_speed);
+            horizontal_velocity = Vector3.ClampMagnitude(horizontal_velocity, speed);
             _character_velocity = horizontal_velocity + Vector3.up * _character_velocity.y;
             _character_velocity += Vector3.down * _gravity_force * Time.deltaTime;
         }
