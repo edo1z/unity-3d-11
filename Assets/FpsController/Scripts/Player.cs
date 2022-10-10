@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     private float _grounded_check_distance = 0.05f;
 
     private PlayerInputHandler _input;
+    private Gun _gun;
     private CharacterController _chara;
     private GameObject _cam;
     private float _player_now_height;
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
     {
         TryGetComponent(out _chara);
         TryGetComponent(out _input);
+        TryGetComponent(out _gun);
         _cam = GameObject.Find("Main Camera");
     }
 
@@ -47,6 +49,14 @@ public class Player : MonoBehaviour
         transform.Rotate(new Vector3(0, y, 0), Space.Self);
         float vertical_angle = Mathf.Clamp(x, -89f, 89f);
         _cam.transform.localEulerAngles += new Vector3(vertical_angle, 0, 0);
+    }
+
+    private void Fire()
+    {
+        if (_input.GetIsFire())
+        {
+            _gun.Shoot();
+        }
     }
 
     private void Move()
@@ -122,5 +132,6 @@ public class Player : MonoBehaviour
         Aim();
         Move();
         UpdateHeight();
+        Fire();
     }
 }
