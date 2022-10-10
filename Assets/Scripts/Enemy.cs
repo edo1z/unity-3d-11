@@ -3,16 +3,16 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    private static GameObject _player;
-    private static GameObject _enemy_obj;
+    private GameObject _player;
+    //private static GameObject _enemy_obj;
     private NavMeshAgent _enemy;
 
-    private static GameObject GetEnemy()
-    {
-        return _enemy_obj ?? (_enemy_obj = (GameObject)Resources.Load("Prefabs/Enemy/Enemy"));
-    }
+    //private static GameObject GetEnemy()
+    //{
+    //    return _enemy_obj ?? (_enemy_obj = (GameObject)Resources.Load("Prefabs/Enemy/Enemy"));
+    //}
 
-    private static GameObject GetPlayer()
+    private GameObject GetPlayer()
     {
         return _player ?? (_player = GameObject.FindWithTag("Player"));
     }

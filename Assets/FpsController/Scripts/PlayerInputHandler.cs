@@ -1,8 +1,12 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+
 
 public class PlayerInputHandler : MonoBehaviour
 {
+    [SerializeField] private UnityEvent OpenMenuEvent = new UnityEvent();
+
     private PlayerInput _input;
     private Vector2 _move_direction;
     private Vector2 _look_direction;
@@ -10,6 +14,7 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _is_crouching = false;
     private bool _is_fire = false;
     private bool _is_jumping = false;
+
 
     private void Awake()
     {
@@ -41,6 +46,7 @@ public class PlayerInputHandler : MonoBehaviour
         _input.actions["Fire"].canceled += OnFire;
         _input.actions["Jump"].started += OnJump;
         _input.actions["Jump"].canceled += OnJump;
+        _input.actions["OpenMenu"].started += OpenMenu;
     }
 
     private void OnDisable()
@@ -49,14 +55,15 @@ public class PlayerInputHandler : MonoBehaviour
         _input.actions["Move"].canceled -= OnMove;
         _input.actions["Look"].performed -= OnLook;
         _input.actions["Look"].canceled -= OnLook;
-        _input.actions["Run"].started += OnRun;
-        _input.actions["Run"].canceled += OnRun;
-        _input.actions["Crouch"].started += OnCrouch;
-        _input.actions["Crouch"].canceled += OnCrouch;
-        _input.actions["Fire"].started += OnFire;
-        _input.actions["Fire"].canceled += OnFire;
-        _input.actions["Jump"].started += OnJump;
-        _input.actions["Jump"].canceled += OnJump;
+        _input.actions["Run"].started -= OnRun;
+        _input.actions["Run"].canceled -= OnRun;
+        _input.actions["Crouch"].started -= OnCrouch;
+        _input.actions["Crouch"].canceled -= OnCrouch;
+        _input.actions["Fire"].started -= OnFire;
+        _input.actions["Fire"].canceled -= OnFire;
+        _input.actions["Jump"].started -= OnJump;
+        _input.actions["Jump"].canceled -= OnJump;
+        _input.actions["OpenMenu"].started -= OpenMenu;
     }
 
     private void OnMove(InputAction.CallbackContext obj)
@@ -133,6 +140,11 @@ public class PlayerInputHandler : MonoBehaviour
                 _is_jumping = false;
                 break;
         }
+    }
+
+    private void OpenMenu(InputAction.CallbackContext obj)
+    {
+        OpenMenuEvent.Invoke();
     }
 
     public Vector2 GetMoveDirection()

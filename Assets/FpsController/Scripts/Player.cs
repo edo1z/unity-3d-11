@@ -109,7 +109,6 @@ public class Player : MonoBehaviour
             Vector3 bottom_posi = transform.position + (transform.up * _chara.radius);
             Vector3 top_posi = transform.position + transform.up * (_chara.height - _chara.radius);
             float distance = _grounded_check_distance + _chara.skinWidth;
-            Debug.Log("bottom: " + bottom_posi + " top: " + top_posi + " distance: " + distance);
             if (Physics.CapsuleCast(bottom_posi, top_posi, _chara.radius, Vector3.down, out RaycastHit hit, distance, -1, QueryTriggerInteraction.Ignore))
             {
                 _is_grounded = true;
